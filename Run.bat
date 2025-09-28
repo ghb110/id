@@ -43,22 +43,21 @@ goto end
 :end
 
 :: 检查并等待 RustDesk 退出
-echo 正在等待 RustDesk安装完成退出...
+echo 正在等待 RustDesk解压完成...
 
 :waitLoop
 tasklist | find /i "rustdesk-64.exe" >nul
 if errorlevel 1 (
-    echo RustDesk 已退出，准备删除文件...
+    echo RustDesk 已解压完成，准备删除文件...
     goto deleteRustDesk
 ) else (
-    timeout /t 7 >nul
+    timeout /t 3 >nul
     goto waitLoop
 )
 
 :deleteRustDesk
 cmd /c del "%~dp0..\rustdesk-64.zip"
 cmd /c del "%~dp0\rustdesk-64.exe"
-cmd /c del "%~f0"
 
 :: 检查删除结果
 if exist "%~dp0\rustdesk-64.exe" (
@@ -72,3 +71,10 @@ if exist "%~dp0..\rustdesk-64.zip" (
 ) else (
     echo [成功] rustdesk-64.zip 已成功删除。
 )
+
+for /l %%i in (17,-1,1) do (
+    echo 注意！注意！本程序将在 %%i秒 后退出，退出后请点击安装。
+    timeout /t 1 >nul
+)
+cmd /c del "%~f0"
+
